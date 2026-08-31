@@ -1,0 +1,38 @@
+from functools import lru_cache
+ 
+from pydantic_settings import BaseSettings, SettingsConfigDict
+ 
+ 
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore",
+    )
+ 
+    app_name: str = "aegis-ai"
+    app_env: str = "development"
+    debug: bool = False
+    log_level: str = "INFO"
+ 
+    groq_api_key: str
+    llm_model: str = "llama-3.3-70b-versatile"
+    llm_temperature: float = 0.2
+ 
+    chroma_persist_dir: str = "./data/chroma"
+    embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
+ 
+    critic_score_threshold: float = 7.0
+    max_agent_retries: int = 2
+ 
+    api_host: str = "0.0.0.0"
+    api_port: int = 8000
+ 
+ 
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()
+ 
+ 
+settings = get_settings()
