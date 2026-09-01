@@ -1,3 +1,6 @@
 /venv
 .env
-__pycache__
+!.env.example
+__pycache__/
+data/chroma/
+*.egg-info/

@@ -32,3 +32,5 @@ class AgentState(BaseModel):
 
     intent: Optional[Intent] = None
     priority: Optional[Priority] = None
+
+    retrieved_docs: list[str] = Field(default_factory=list)
