@@ -1,1 +1,2 @@
 from .triage_prompt import TRIAGE_SYSTEM_PROMPT
+from .investigation_prompt import INVESTIGATION_SYSTEM_PROMPT
