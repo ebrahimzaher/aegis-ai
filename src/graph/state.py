@@ -23,6 +23,9 @@ class TriageOutput(BaseModel):
     priority: Priority
     summary: str = Field(description="One-line summary of what the customer needs")
 
+class InvestigationOutput(BaseModel):
+    findings: str = Field(description="What was found in the customer's order/account data")
+
 class AgentState(BaseModel):
     trace_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     ticket_id: str
@@ -34,3 +37,5 @@ class AgentState(BaseModel):
     priority: Optional[Priority] = None
 
     retrieved_docs: list[str] = Field(default_factory=list)
+
+    investigation: Optional[InvestigationOutput] = None
