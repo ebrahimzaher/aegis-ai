@@ -1,1 +1,1 @@
-from .state import AgentState, TriageOutput
+from .state import AgentState, TriageOutput, InvestigationOutput
