@@ -1,8 +1,13 @@
 import uuid
 from enum import Enum
-from typing import Optional
 from datetime import datetime
-from pydantic import BaseModel, Field
+from typing import Optional, Union
+from pydantic import BaseModel, Field, field_validator
+
+def _coerce_bool(value):
+    if isinstance(value, str):
+        return value.strip().lower() in ("true", "1", "yes")
+    return value
 
 class Priority(str, Enum):
     LOW = "low"
@@ -26,6 +31,21 @@ class TriageOutput(BaseModel):
 class InvestigationOutput(BaseModel):
     findings: str = Field(description="What was found in the customer's order/account data")
 
+class PolicyOutput(BaseModel):
+    applicable_policy: str = Field(description="The relevant policy rule for this case, in plain language")
+    requires_human_approval: Union[bool, str] = Field(
+        description="True if company policy requires a human/manager to approve the action"
+    )
+    notes: str = ""
+
+    @field_validator("requires_human_approval", mode="before")
+    @classmethod
+    def coerce_requires_human_approval(cls, v):
+        return _coerce_bool(v)
+
+    def model_post_init(self, __context):
+        self.requires_human_approval = bool(self.requires_human_approval)
+
 class AgentState(BaseModel):
     trace_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     ticket_id: str
@@ -39,3 +59,5 @@ class AgentState(BaseModel):
     retrieved_docs: list[str] = Field(default_factory=list)
 
     investigation: Optional[InvestigationOutput] = None
+
+    policy_check: Optional[PolicyOutput] = None
