@@ -1,1 +1,1 @@
-from .state import AgentState, TriageOutput, InvestigationOutput, PolicyOutput
+from .state import AgentState, TriageOutput, InvestigationOutput, PolicyOutput, ResolutionOutput
