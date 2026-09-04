@@ -30,6 +30,8 @@ class TriageOutput(BaseModel):
 
 class InvestigationOutput(BaseModel):
     findings: str = Field(description="What was found in the customer's order/account data")
+    relevant_order_id: Optional[str] = None
+    data_sources_checked: list[str] = Field(default_factory=list)
 
 class PolicyOutput(BaseModel):
     applicable_policy: str = Field(description="The relevant policy rule for this case, in plain language")
@@ -46,6 +48,21 @@ class PolicyOutput(BaseModel):
     def model_post_init(self, __context):
         self.requires_human_approval = bool(self.requires_human_approval)
 
+class ResolutionOutput(BaseModel):
+    proposed_action: str = Field(description="The concrete action/response proposed for the customer")
+    is_sensitive_action: Union[bool, str] = Field(
+        description="True if this action is a refund, cancellation, or other irreversible change"
+    )
+    reasoning: str = Field(description="Why this action was chosen, referencing findings/policy")
+
+    @field_validator("is_sensitive_action", mode="before")
+    @classmethod
+    def coerce_is_sensitive_action(cls, v):
+        return _coerce_bool(v)
+
+    def model_post_init(self, __context):
+        self.is_sensitive_action = bool(self.is_sensitive_action)
+
 class AgentState(BaseModel):
     trace_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     ticket_id: str
@@ -61,3 +78,5 @@ class AgentState(BaseModel):
     investigation: Optional[InvestigationOutput] = None
 
     policy_check: Optional[PolicyOutput] = None
+
+    resolution: Optional[ResolutionOutput] = None
