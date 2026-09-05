@@ -1,14 +1,19 @@
-# aegis-ai
+<div align="center">
 
-**AI Customer Support Resolution Agent** — a production-shaped multi-agent
-system built with LangGraph that triages, investigates, and resolves
-customer support tickets end-to-end, with a real human-in-the-loop
-safeguard for sensitive actions like refunds.
+# 🛡️ Aegis AI
 
-This isn't a single-prompt chatbot. It's six specialized agents that
-each do one job well, hand off structured data to the next, and
-converge on a decision that's automatically escalated to a human
-whenever the system isn't confident enough to act alone.
+**A stateful multi-agent customer support system that automates ticket resolution using LLM-powered triage, real-time data investigation, policy enforcement, and critic-based evaluation.**
+
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)
+![LangGraph](https://img.shields.io/badge/LangGraph-0.2-orange)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white)
+![Groq](https://img.shields.io/badge/Groq-Powered-F55036?logo=groq&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-brightgreen)
+
+[🚀 API Docs](http://localhost:8000/docs) · [🐛 Report Bug](../../issues)
+
+</div>
 
 ---
 
@@ -90,6 +95,7 @@ anything touching money.
 | Structured outputs | Pydantic v2, LLM tool-calling / structured output |
 | API | FastAPI |
 | Config | `pydantic-settings`, `.env` |
+| Containerization | Docker, Docker Compose |
 
 Everything runs locally except the LLM calls themselves — no external
 vector DB service, no paid embedding API.
@@ -126,6 +132,9 @@ aegis-ai/
 ├── data/
 │   ├── faqs/             # source-of-truth policy/FAQ documents
 │   └── chroma/           # generated vector store (not committed)
+├── Dockerfile
+├── docker-compose.yml
+├── docker-entrypoint.sh
 ├── pyproject.toml
 ├── requirements.txt
 └── .env.example
@@ -134,6 +143,28 @@ aegis-ai/
 ---
 
 ## Setup
+
+### 🐳 Docker (recommended)
+
+```bash
+git clone https://github.com/ebrahimzaher/aegis-ai
+cd aegis-ai
+
+cp .env.example .env
+# fill in GROQ_API_KEY in .env
+
+docker compose up --build
+```
+
+The entrypoint automatically runs `python -m rag.ingest` on first start
+(when no Chroma data exists), then starts the API server.
+
+Interactive API docs: **http://localhost:8000/docs**
+
+> **Note:** `./data/chroma` is mounted as a volume — the vector store
+> persists across container restarts.
+
+### 🐍 Local (manual)
 
 ```bash
 git clone https://github.com/ebrahimzaher/aegis-ai
@@ -147,14 +178,10 @@ pip install -r requirements.txt
 pip install -e .             # makes agents/graph/config importable from anywhere
 
 cp .env.example .env
-# then fill in GROQ_API_KEY in .env
+# fill in GROQ_API_KEY in .env
 
 python -m rag.ingest         # builds the vector store from data/faqs/
-```
 
-## Running
-
-```bash
 cd src
 uvicorn main:app --reload
 ```
