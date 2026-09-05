@@ -5,5 +5,5 @@ def knowledge_node(state: AgentState) -> dict:
     docs = retrieve_knowledge(state.customer_message, k=3)
 
     return {
-        "knowledge": docs,
+        "retrieved_docs": docs,
     }

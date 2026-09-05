@@ -4,3 +4,5 @@ from .investigation_node import investigation_node
 from .policy_node import policy_node
 from .resolution_node import resolution_node
 from .critic_node import critic_node
+from .human_approval_node import human_approval_node
+from .finalize_node import finalize_node
