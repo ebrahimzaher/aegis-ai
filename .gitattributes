@@ -1,0 +1,5 @@
+# Default behavior
+* text=auto
+
+# Shell scripts must use LF (Unix) line endings for Docker compatibility
+*.sh text eol=lf
