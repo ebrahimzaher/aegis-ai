@@ -1,4 +1,3 @@
-﻿#!/usr/bin/env sh
 set -e
 
 CHROMA_DIR="${CHROMA_PERSIST_DIR:-./data/chroma}"
