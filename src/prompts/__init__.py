@@ -2,3 +2,4 @@ from .triage_prompt import TRIAGE_SYSTEM_PROMPT
 from .investigation_prompt import INVESTIGATION_SYSTEM_PROMPT
 from .policy_prompt import POLICY_SYSTEM_PROMPT
 from .resolution_prompt import RESOLUTION_SYSTEM_PROMPT
+from .critic_prompt import CRITIC_SYSTEM_PROMPT
