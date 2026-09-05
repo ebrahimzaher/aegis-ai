@@ -63,6 +63,21 @@ class ResolutionOutput(BaseModel):
     def model_post_init(self, __context):
         self.is_sensitive_action = bool(self.is_sensitive_action)
 
+class CriticOutput(BaseModel):
+    score: float = Field(ge=0, le=10, description="Quality score out of 10 for the proposed resolution")
+    is_hallucination_risk: Union[bool, str] = Field(
+        description="True if the proposed action is not fully supported by the findings/policy given"
+    )
+    feedback: str = Field(description="Brief explanation of the score, and what to fix if score is low")
+
+    @field_validator("is_hallucination_risk", mode="before")
+    @classmethod
+    def coerce_is_hallucination_risk(cls, v):
+        return _coerce_bool(v)
+
+    def model_post_init(self, __context):
+        self.is_hallucination_risk = bool(self.is_hallucination_risk)
+
 class AgentState(BaseModel):
     trace_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     ticket_id: str
@@ -80,3 +95,11 @@ class AgentState(BaseModel):
     policy_check: Optional[PolicyOutput] = None
 
     resolution: Optional[ResolutionOutput] = None
+
+    critic: Optional[CriticOutput] = None
+
+    requires_human_approval: bool = False
+    human_approved: Optional[bool] = None
+
+    final_response: Optional[str] = None
+    retry_count: int = 0
